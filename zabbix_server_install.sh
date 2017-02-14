@@ -1,7 +1,7 @@
 #/bin/bash
 
 #install mysql-server-5.6.3
-wget http://172.16.1.99/scripts/mysql_5_6_3_install.sh
+wget http://124.202.226.126:31099/scripts/mysql_5_6_3_install.sh
 bash mysql_5_6_3_install.sh
 #
 mysqlPasswd="PASSWORD"
@@ -17,7 +17,7 @@ useradd zabbix -g zabbix
 #
 ln -s /data/mysqlSocket/my3306.sock /tmp/mysql.sock
 #
-wget http://172.16.1.99/zabbix/zabbix-3.0.3.tar.gz -P /usr/local/src
+wget http://124.202.226.126:31099/zabbix/zabbix-3.0.3.tar.gz -P /usr/local/src
 tar xf /usr/local/src/zabbix-3.0.3.tar.gz -C /usr/local/src/
 cd /usr/local/src/zabbix-3.0.3/
 ./configure --prefix=/usr/local/zabbix --enable-server --enable-proxy --enable-agent --with-mysql=/usr/bin/mysql_config --with-net-snmp --with-libcurl
@@ -66,10 +66,10 @@ echo "172.16.1.180 $DBHost" >>/etc/hosts
 /etc/init.d/zabbix_agentd start
 
 #
-wget http://172.16.1.99/Nginx/nginx-1.10.0.tar.gz -P /usr/local/src
-wget http://172.16.1.99/Nginx/openssl-1.0.2h.tar.gz -P /usr/local/src
-wget http://172.16.1.99/Nginx/pcre-8.38.tar.gz -P /usr/local/src
-wget http://172.16.1.99/Nginx/zlib-1.2.8.tar.gz -P /usr/local/src
+wget http://124.202.226.126:31099/Nginx/nginx-1.10.0.tar.gz -P /usr/local/src
+wget http://124.202.226.126:31099/Nginx/openssl-1.0.2h.tar.gz -P /usr/local/src
+wget http://124.202.226.126:31099/Nginx/pcre-8.38.tar.gz -P /usr/local/src
+wget http://124.202.226.126:31099/Nginx/zlib-1.2.8.tar.gz -P /usr/local/src
 
 tar xf /usr/local/src/nginx-1.10.0.tar.gz -C /usr/local/src
 tar xf /usr/local/src/openssl-1.0.2h.tar.gz -C /usr/local/src
@@ -141,7 +141,7 @@ fastcgi_param  SERVER_NAME        \$server_name;
 eof
 
 #############
-wget http://172.16.1.99/php/libiconv-1.14.tar.gz -P /usr/local/src
+wget http://124.202.226.126:31099/php/libiconv-1.14.tar.gz -P /usr/local/src
 tar zxf /usr/local/src/libiconv-1.14.tar.gz -C /usr/local/src
 cd /usr/local/src/libiconv-1.14
 ./configure --prefix=/usr/local/libiconv
@@ -149,7 +149,7 @@ sed -i '1010d' srclib/stdio.h
 make && make install
 
 #
-wget http://172.16.1.99/php/libmcrypt-2.5.7.tar.gz -P /usr/local/src
+wget http://124.202.226.126:31099/php/libmcrypt-2.5.7.tar.gz -P /usr/local/src
 tar -zxf /usr/local/src/libmcrypt-2.5.7.tar.gz -C /usr/local/src
 cd /usr/local/src/libmcrypt-2.5.7
 ./configure --prefix=/usr/local/libmcrypt
@@ -157,7 +157,7 @@ make && make install
 
 #
 yum -y install libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel libcurl libcurl-devel libxslt-devel
-wget http://172.16.1.99/php/php-5.5.31.tar.gz -P /usr/local/src
+wget http://124.202.226.126:31099/php/php-5.5.31.tar.gz -P /usr/local/src
 tar -zxf /usr/local/src/php-5.5.31.tar.gz -C /usr/local/src
 cd /usr/local/src/php-5.5.31
 ./configure \
