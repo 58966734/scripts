@@ -1,33 +1,33 @@
 #!/bin/bash
 
-read -p "Çë¶¨ÒåÊý¾Ý¿âÊµÀýÃû³Æ: " m1
+read -p "è¯·å®šä¹‰æ•°æ®åº“å®žä¾‹åç§°: " m1
 if [ -z $m1 ];then
     echo "error,the name of database instance must not null"
     exit
 fi
-#¶¨ÒåÊý¾Ý¿âÊµÀýÃû
+#å®šä¹‰æ•°æ®åº“å®žä¾‹å
 #m1=broadcast-classroom
 
-#ÏµÍ³»·¾³
+#ç³»ç»ŸçŽ¯å¢ƒ
 systemctl stop firewalld
 setenforce 0
 yum install -y perl-Module-Install.noarch libaio libaio-devel autoconf
 
-#¼ì²é¼°ÇåÀíÀÏ°æ±¾¼°²ÐÓàÎÄ¼þ
+#æ£€æŸ¥åŠæ¸…ç†è€ç‰ˆæœ¬åŠæ®‹ä½™æ–‡ä»¶
 yum -y remove mysql-libs
 rpm -qa |grep -i mysql|xargs -I {} rpm -e --nodeps {}
 rpm -qa |grep mariadb|xargs -I {} rpm -e --nodeps {}
 rm -rf /var/lib/mysql*
 rm -rf /usr/share/mysql*
 
-#´´½¨mysql×é¼°ÓÃ»§
+#åˆ›å»ºmysqlç»„åŠç”¨æˆ·
 groupadd mysql
 useradd mysql -g mysql
 id mysql
 
-#½â°ü
+#è§£åŒ…
 mkdir /data/soft -p
-wget http://172.16.1.99/MySQL/MySQL-5.6.31/Linux/MySQL-5.6.31-1.el6.x86_64.rpm-bundle.tar -P /data/soft
+wget http://124.202.226.126:31099/MySQL/MySQL-5.6.31/Linux/MySQL-5.6.31-1.el6.x86_64.rpm-bundle.tar -P /data/soft
 
 if [ -f /data/soft/MySQL-5.6.31-1.el6.x86_64.rpm-bundle.tar ];then
     tar xf /data/soft/MySQL-5.6.31-1.el6.x86_64.rpm-bundle.tar -C /tmp/
@@ -36,21 +36,21 @@ else
     exit
 fi
 
-#RPM°²×°
+#RPMå®‰è£…
 rpm -ivh /tmp/MySQL-shared-5.6.31-1.el6.x86_64.rpm
 rpm -ivh /tmp/MySQL-devel-5.6.31-1.el6.x86_64.rpm
 rpm -ivh /tmp/MySQL-client-5.6.31-1.el6.x86_64.rpm
 rpm -ivh /tmp/MySQL-server-5.6.31-1.el6.x86_64.rpm
 
 
-#DataÄ¿Â¼
+#Dataç›®å½•
 mkdir -pv /data/mysqlData/$m1/data
 mkdir -pv /data/mysqlData/$m1/tmp
-#LogÄ¿Â¼
+#Logç›®å½•
 mkdir -pv /data/mysqlLog/$m1/logs
-#ÅäÖÃÎÄ¼þÄ¿Â¼
+#é…ç½®æ–‡ä»¶ç›®å½•
 mkdir -pv /data/mysqlConfig
-#socketÄ¿Â¼
+#socketç›®å½•
 mkdir -pv /data/mysqlSocket
 
 cat >/data/mysqlConfig/my3306.cnf <<my3306_cnf
@@ -70,84 +70,84 @@ log-bin = /data/mysqlLog/$m1/logs/mysql-bin
 log-error = /data/mysqlLog/$m1/$m1-err.log
 slow-query-log-file = /data/mysqlLog/$m1/$m1-slow.log
 
-#MySQLÑ¡ÏîÒÔ±ÜÃâÍâ²¿Ëø¶¨
+#MySQLé€‰é¡¹ä»¥é¿å…å¤–éƒ¨é”å®š
 skip-external-locking
 
-#½ûÖ¹MySQL¶ÔÍâ²¿Á¬½Ó½øÐÐDNS½âÎö£¬Ê¹ÓÃÕâÒ»Ñ¡Ïî¿ÉÒÔÏû³ýMySQL½øÐÐDNS½âÎöµÄÊ±¼ä¡£
-#µ«ÐèÒª×¢Òâ£¬Èç¹û¿ªÆô¸ÃÑ¡Ïî£¬ÔòËùÓÐÔ¶³ÌÖ÷»úÁ¬½ÓÊÚÈ¨¶¼ÒªÊ¹ÓÃIPµØÖ··½Ê½£¬·ñÔòMySQL½«ÎÞ·¨Õý³£´¦ÀíÁ¬½ÓÇëÇó¡£
+#ç¦æ­¢MySQLå¯¹å¤–éƒ¨è¿žæŽ¥è¿›è¡ŒDNSè§£æžï¼Œä½¿ç”¨è¿™ä¸€é€‰é¡¹å¯ä»¥æ¶ˆé™¤MySQLè¿›è¡ŒDNSè§£æžçš„æ—¶é—´ã€‚
+#ä½†éœ€è¦æ³¨æ„ï¼Œå¦‚æžœå¼€å¯è¯¥é€‰é¡¹ï¼Œåˆ™æ‰€æœ‰è¿œç¨‹ä¸»æœºè¿žæŽ¥æŽˆæƒéƒ½è¦ä½¿ç”¨IPåœ°å€æ–¹å¼ï¼Œå¦åˆ™MySQLå°†æ— æ³•æ­£å¸¸å¤„ç†è¿žæŽ¥è¯·æ±‚ã€‚
 skip-name-resolve
 
-#Õâ¸ö²ÎÊýÓÃÀ´ÅäÖÃ´Ó·þÎñÆ÷µÄ¸üÐÂÊÇ·ñÐ´Èë¶þ½øÖÆÈÕÖ¾£¬Õâ¸öÑ¡ÏîÄ¬ÈÏÊÇ²»´ò¿ªµÄ¡£
-#µ«ÊÇ£¬Èç¹ûÕâ¸ö´Ó·þÎñÆ÷BÊÇ·þÎñÆ÷AµÄ´Ó·þÎñÆ÷£¬Í¬Ê±»¹×÷Îª·þÎñÆ÷CµÄÖ÷·þÎñÆ÷£¬ÄÇÃ´¾ÍÐèÒª¿ªÕâ¸öÑ¡Ïî£¬ÕâÑùËüµÄ´Ó·þÎñÆ÷C²ÅÄÜ»ñµÃËüµÄ¶þ½øÖÆÈÕÖ¾½øÐÐÍ¬²½²Ù×÷
+#è¿™ä¸ªå‚æ•°ç”¨æ¥é…ç½®ä»ŽæœåŠ¡å™¨çš„æ›´æ–°æ˜¯å¦å†™å…¥äºŒè¿›åˆ¶æ—¥å¿—ï¼Œè¿™ä¸ªé€‰é¡¹é»˜è®¤æ˜¯ä¸æ‰“å¼€çš„ã€‚
+#ä½†æ˜¯ï¼Œå¦‚æžœè¿™ä¸ªä»ŽæœåŠ¡å™¨Bæ˜¯æœåŠ¡å™¨Açš„ä»ŽæœåŠ¡å™¨ï¼ŒåŒæ—¶è¿˜ä½œä¸ºæœåŠ¡å™¨Cçš„ä¸»æœåŠ¡å™¨ï¼Œé‚£ä¹ˆå°±éœ€è¦å¼€è¿™ä¸ªé€‰é¡¹ï¼Œè¿™æ ·å®ƒçš„ä»ŽæœåŠ¡å™¨Cæ‰èƒ½èŽ·å¾—å®ƒçš„äºŒè¿›åˆ¶æ—¥å¿—è¿›è¡ŒåŒæ­¥æ“ä½œ
 log-slave-updates
 
-#±íÊ¾²»ÐèÒªÍ¬²½µÄÊý¾Ý¿â
+#è¡¨ç¤ºä¸éœ€è¦åŒæ­¥çš„æ•°æ®åº“
 binlog-ignore-db = mysql.%
 binlog-ignore-db = information_schema.%
 
-#±íÊ¾²»ÐèÒª¸´ÖÆµÄÊý¾Ý¿â
+#è¡¨ç¤ºä¸éœ€è¦å¤åˆ¶çš„æ•°æ®åº“
 replicate_ignore_db = mysql.%
 replicate_ignore_db = information_schema.%
 
-#¿ªÆôÂý²éÑ¯
+#å¼€å¯æ…¢æŸ¥è¯¢
 slow-query-log
 
-#¿ªÆô²éÑ¯»º´æ
+#å¼€å¯æŸ¥è¯¢ç¼“å­˜
 explicit_defaults_for_timestamp=true
 
-#binlogÈÕÖ¾¸ñÊ½
-# Ä¬ÈÏÓÐÈýÖÖ£ºÕâÀïÑ¡Ôñmixed£¬»ìºÏÊ¹ÓÃ£¬Ò»°ãµÄ¸´ÖÆÊ¹ÓÃSTATEMENTÄ£Ê½±£´æbinlog£¬¶ÔÓÚSTATEMENTÄ£Ê½ÎÞ·¨¸´ÖÆµÄ²Ù×÷Ê¹ÓÃROWÄ£Ê½±£´æbinlog£¬MySQL»á¸ù¾ÝÖ´ÐÐµÄSQLÓï¾äÑ¡ÔñÈÕÖ¾±£´æ·½Ê½¡£
+#binlogæ—¥å¿—æ ¼å¼
+# é»˜è®¤æœ‰ä¸‰ç§ï¼šè¿™é‡Œé€‰æ‹©mixedï¼Œæ··åˆä½¿ç”¨ï¼Œä¸€èˆ¬çš„å¤åˆ¶ä½¿ç”¨STATEMENTæ¨¡å¼ä¿å­˜binlogï¼Œå¯¹äºŽSTATEMENTæ¨¡å¼æ— æ³•å¤åˆ¶çš„æ“ä½œä½¿ç”¨ROWæ¨¡å¼ä¿å­˜binlogï¼ŒMySQLä¼šæ ¹æ®æ‰§è¡Œçš„SQLè¯­å¥é€‰æ‹©æ—¥å¿—ä¿å­˜æ–¹å¼ã€‚
 binlog_format = mixed
 max_binlog_size = 512M
-binlog_cache_size = 1M  #Ä¬ÈÏbinlog_cache_sizeÊÇ32K
-expire-logs-days = 30   #³¬¹ý30ÌìµÄbinlogÉ¾³ý
+binlog_cache_size = 1M  #é»˜è®¤binlog_cache_sizeæ˜¯32K
+expire-logs-days = 30   #è¶…è¿‡30å¤©çš„binlogåˆ é™¤
 
-#MySQLÄÜÓÐµÄÁ¬½ÓÊýÁ¿¡£
+#MySQLèƒ½æœ‰çš„è¿žæŽ¥æ•°é‡ã€‚
 back_log = 500
 
-#MySQLµÄ×î´óÁ¬½ÓÊý£¬Èç¹û·þÎñÆ÷µÄ²¢·¢Á¬½ÓÇëÇóÁ¿±È½Ï´ó£¬½¨Òéµ÷¸ß´ËÖµ£¬ÒÔÔö¼Ó²¢ÐÐÁ¬½ÓÊýÁ¿
+#MySQLçš„æœ€å¤§è¿žæŽ¥æ•°ï¼Œå¦‚æžœæœåŠ¡å™¨çš„å¹¶å‘è¿žæŽ¥è¯·æ±‚é‡æ¯”è¾ƒå¤§ï¼Œå»ºè®®è°ƒé«˜æ­¤å€¼ï¼Œä»¥å¢žåŠ å¹¶è¡Œè¿žæŽ¥æ•°é‡
 max_connections = 2048
 
-#Âý²éÑ¯Ê±¼ä³¬¹ý1ÃëÔòÎªÂý²éÑ¯
+#æ…¢æŸ¥è¯¢æ—¶é—´è¶…è¿‡1ç§’åˆ™ä¸ºæ…¢æŸ¥è¯¢
 long_query_time = 1
 
-#ÊÇÓÃÀ´ÏÞÖÆÓÃ»§×ÊÔ´µÄ
+#æ˜¯ç”¨æ¥é™åˆ¶ç”¨æˆ·èµ„æºçš„
 max_user_connections = 2000
-#ÊÇÒ»¸öMySQLÖÐÓë°²È«ÓÐ¹ØµÄ¼ÆÊýÆ÷Öµ£¬Ëü¸ºÔð×èÖ¹¹ý¶à³¢ÊÔÊ§°ÜµÄ¿Í»§¶ËÒÔ·ÀÖ¹±©Á¦ÆÆ½âÃÜÂëµÄÇé¿ö
+#æ˜¯ä¸€ä¸ªMySQLä¸­ä¸Žå®‰å…¨æœ‰å…³çš„è®¡æ•°å™¨å€¼ï¼Œå®ƒè´Ÿè´£é˜»æ­¢è¿‡å¤šå°è¯•å¤±è´¥çš„å®¢æˆ·ç«¯ä»¥é˜²æ­¢æš´åŠ›ç ´è§£å¯†ç çš„æƒ…å†µ
 max_connect_errors = 10000
 
-#·þÎñÆ÷¹Ø±Õ·Ç½»»¥Á¬½ÓÖ®Ç°µÈ´ý»î¶¯µÄÃëÊý¡£
+#æœåŠ¡å™¨å…³é—­éžäº¤äº’è¿žæŽ¥ä¹‹å‰ç­‰å¾…æ´»åŠ¨çš„ç§’æ•°ã€‚
 wait_timeout = 28800
 
-#·þÎñÆ÷¹Ø±Õ½»»¥Ê½Á¬½ÓÇ°µÈ´ý»î¶¯µÄÃëÊý¡£
+#æœåŠ¡å™¨å…³é—­äº¤äº’å¼è¿žæŽ¥å‰ç­‰å¾…æ´»åŠ¨çš„ç§’æ•°ã€‚
 interactive_timeout = 28800
-#ÊÇÉè¶¨Ô¶³ÌÓÃ»§±ØÐë»ØÓ¦PORTÀàÐÍÊý¾ÝÁ¬½ÓµÄ×î´óÊ±¼ä¡£µ¥Î»£ºÃë¡£Ä¬ÈÏÖµ£º60
+#æ˜¯è®¾å®šè¿œç¨‹ç”¨æˆ·å¿…é¡»å›žåº”PORTç±»åž‹æ•°æ®è¿žæŽ¥çš„æœ€å¤§æ—¶é—´ã€‚å•ä½ï¼šç§’ã€‚é»˜è®¤å€¼ï¼š60
 connect_timeout = 20
 
-#µ±slaveÈÏÎªÁ¬½ÓmasterµÄÁ¬½ÓÓÐÎÊÌâÊ±£¬¾ÍµÈ´ýNÃë£¬È»ºó¶Ï¿ªÁ¬½Ó£¬ÖØÐÂÁ¬½Ómaster¡£
+#å½“slaveè®¤ä¸ºè¿žæŽ¥masterçš„è¿žæŽ¥æœ‰é—®é¢˜æ—¶ï¼Œå°±ç­‰å¾…Nç§’ï¼Œç„¶åŽæ–­å¼€è¿žæŽ¥ï¼Œé‡æ–°è¿žæŽ¥masterã€‚
 slave-net-timeout = 30
 
-#relay logºÜ¶à·½Ãæ¶¼¸úbinary log²î²»¶à£¬Çø±ðÊÇ£º´Ó·þÎñÆ÷I/OÏß³Ì½«Ö÷·þÎñÆ÷µÄ¶þ½øÖÆÈÕÖ¾¶ÁÈ¡¹ýÀ´¼ÇÂ¼µ½´Ó·þÎñÆ÷±¾µØÎÄ¼þ£¬È»ºóSQLÏß³Ì»á¶ÁÈ¡relay-logÈÕÖ¾µÄÄÚÈÝ²¢Ó¦ÓÃµ½´Ó·þÎñÆ÷¡£
+#relay logå¾ˆå¤šæ–¹é¢éƒ½è·Ÿbinary logå·®ä¸å¤šï¼ŒåŒºåˆ«æ˜¯ï¼šä»ŽæœåŠ¡å™¨I/Oçº¿ç¨‹å°†ä¸»æœåŠ¡å™¨çš„äºŒè¿›åˆ¶æ—¥å¿—è¯»å–è¿‡æ¥è®°å½•åˆ°ä»ŽæœåŠ¡å™¨æœ¬åœ°æ–‡ä»¶ï¼Œç„¶åŽSQLçº¿ç¨‹ä¼šè¯»å–relay-logæ—¥å¿—çš„å†…å®¹å¹¶åº”ç”¨åˆ°ä»ŽæœåŠ¡å™¨ã€‚
 relay-log = relay-bin
 
 max-relay-log-size = 256M
 
-#MySQLÖ§³Ö4ÖÖÊÂÎñ¸ôÀë¼¶±ð£¬ËûÃÇ·Ö±ðÊÇ£º
+#MySQLæ”¯æŒ4ç§äº‹åŠ¡éš”ç¦»çº§åˆ«ï¼Œä»–ä»¬åˆ†åˆ«æ˜¯ï¼š
 #READ-UNCOMMITTED, READ-COMMITTED, REPEATABLE-READ, SERIALIZABLE.
-#ÈçÃ»ÓÐÖ¸¶¨£¬MySQLÄ¬ÈÏ²ÉÓÃµÄÊÇREPEATABLE-READ£¬ORACLEÄ¬ÈÏµÄÊÇREAD-COMMITTED
-transaction_isolation = READ-COMMITTED  # ÔÊÐí»Ã¶ÁºÍ²»¿ÉÖØ¸´¶Á£¬µ«²»ÔÊÐíÔà¶Á£»
+#å¦‚æ²¡æœ‰æŒ‡å®šï¼ŒMySQLé»˜è®¤é‡‡ç”¨çš„æ˜¯REPEATABLE-READï¼ŒORACLEé»˜è®¤çš„æ˜¯READ-COMMITTED
+transaction_isolation = READ-COMMITTED  # å…è®¸å¹»è¯»å’Œä¸å¯é‡å¤è¯»ï¼Œä½†ä¸å…è®¸è„è¯»ï¼›
 
-#mysql5.5 °æ±¾ ÐÂÔöÁËÒ»¸öÐÔÄÜÓÅ»¯µÄÒýÇæ£º PERFORMANCE_SCHEMAÕâ¸ö¹¦ÄÜÄ¬ÈÏÊÇ¹Ø±ÕµÄ
+#mysql5.5 ç‰ˆæœ¬ æ–°å¢žäº†ä¸€ä¸ªæ€§èƒ½ä¼˜åŒ–çš„å¼•æ“Žï¼š PERFORMANCE_SCHEMAè¿™ä¸ªåŠŸèƒ½é»˜è®¤æ˜¯å…³é—­çš„
 performance_schema = 1
 
-#ÏÞÖÆÁËÍ¬Ò»Ê±¼äÔÚmysqldÉÏËùÓÐsessionÖÐprepared Óï¾äµÄÉÏÏÞ¡£
-#ËüµÄÈ¡Öµ·¶Î§Îª¡°0 - 1048576¡±£¬Ä¬ÈÏÎª16382¡£
+#é™åˆ¶äº†åŒä¸€æ—¶é—´åœ¨mysqldä¸Šæ‰€æœ‰sessionä¸­prepared è¯­å¥çš„ä¸Šé™ã€‚
+#å®ƒçš„å–å€¼èŒƒå›´ä¸ºâ€œ0 - 1048576â€ï¼Œé»˜è®¤ä¸º16382ã€‚
 max_prepared_stmt_count=65535
 #Buffer Cache
 
-#Ö¸¶¨Ë÷Òý»º³åÇøµÄ´óÐ¡£¬Ëü¾ö¶¨Ë÷Òý´¦ÀíµÄËÙ¶È£¬ÓÈÆäÊÇË÷Òý¶ÁµÄËÙ¶È¡£
+#æŒ‡å®šç´¢å¼•ç¼“å†²åŒºçš„å¤§å°ï¼Œå®ƒå†³å®šç´¢å¼•å¤„ç†çš„é€Ÿåº¦ï¼Œå°¤å…¶æ˜¯ç´¢å¼•è¯»çš„é€Ÿåº¦ã€‚
 key_buffer_size = 64M
-#Ê×ÏÈmax_allowed_packetÕâ¸öÖµÀíÂÛÉÏ×î´ó¿ÉÒÔÉèÖÃ1G£¬µ«ÊÇÊµ¼ÊÉÏmysql¿Í»§¶Ë×î´óÖ»Ö§³Ö16M¡£
+#é¦–å…ˆmax_allowed_packetè¿™ä¸ªå€¼ç†è®ºä¸Šæœ€å¤§å¯ä»¥è®¾ç½®1Gï¼Œä½†æ˜¯å®žé™…ä¸Šmysqlå®¢æˆ·ç«¯æœ€å¤§åªæ”¯æŒ16Mã€‚
 max_allowed_packet = 16M
 
 table_open_cache = 6144
@@ -222,23 +222,23 @@ open-files-limit = 28192
 
 my3306_cnf
  
-#¸³È¨:ÊôÖ÷Êô×é
+#èµ‹æƒ:å±žä¸»å±žç»„
 chown -R mysql.mysql /data/mysqlData/$m1/data
 chown -R mysql.mysql /data/mysqlData/$m1/tmp
 chown -R mysql.mysql /data//mysqlLog/$m1/logs
 chown -R mysql.mysql /data/mysqlConfig
 chown -R mysql.mysql /data/mysqlSocket
 
-#Êý¾Ý¿â³õÊ¼»¯
+#æ•°æ®åº“åˆå§‹åŒ–
 mysql_install_db --defaults-file=/data/mysqlConfig/my3306.cnf --user=mysql
-#Êý¾Ý¿âÆô¶¯
+#æ•°æ®åº“å¯åŠ¨
 mysqld_safe --defaults-file=/data/mysqlConfig/my3306.cnf --user=mysql&
-#Êý¾Ý¿âÐÞ¸ÄÃÜÂë
+#æ•°æ®åº“ä¿®æ”¹å¯†ç 
 mysqlPassword="PASSWORD"
 mysqladmin -uroot -S /data/mysqlSocket/my3306.sock -p password $mysqlPassword
-#Êý¾Ý¿âµÇÂ¼
+#æ•°æ®åº“ç™»å½•
 mysql -uroot -p$mysqlPassword -S /data/mysqlSocket/my3306.sock
-#Êý¾Ý¿â¹Ø±Õ
+#æ•°æ®åº“å…³é—­
 #mysqladmin -uroot -p -S /data/socket/mysql3306.sock shutdown
 
 #
