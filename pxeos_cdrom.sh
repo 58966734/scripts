@@ -2,7 +2,6 @@
 
 #请先在光驱中放入rhel6.8安装光盘再运行此脚本
 
-
 #无人值守安装rhel6u8的kickstart文件
 mkdir /ftp_root/ks -p
 cat >/ftp_root/ks/rhel6u8.cfg <<eof
