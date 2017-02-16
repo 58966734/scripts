@@ -20,7 +20,7 @@ if [ ! -f $1 ];then
 fi
 
 #检查包文件名的命名规则是否符合规定
-echo $1|grep '2017[01][1234567890][123][1234567890][_][0123456789][1234567890]\.tar' >/dev/nul
+echo $1|grep '2017[01][0-9][1-3][0-9][_][0-9][0-9]\.tar' >/dev/nul
 if [ $? -ne 0 ];then
     echo "ERROR,$1 is Not in accordance with the provisions"
     echo -e "for example :\n\n\t 20170216_01.tar"
@@ -55,6 +55,7 @@ if [ ! -d /data/dist/$envdir ];then
     rm -rf ../$datedir
     exit
 fi
+#检查是否已经存在此版本
 if [ -d /data/dist/$envdir/$datedir ];then
     echo "ERROR,/data/dist/$envdir/$datedir already exist"
     rm -rf ../$datedir
