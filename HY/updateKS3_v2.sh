@@ -73,9 +73,9 @@ else
 fi
 
 #停止当前运行的jar进程
-ps -aux |grep $jarfile |grep -v grep
 jarpid=`ps -aux |grep $jarfile |grep -v grep|awk '{print $2}'`
 if [ ! -z $jarpid ];then
+    ps -aux |grep $jarfile |grep -v grep
     kill $jarpid
     echo -e "\n/data/dist/$envdir/$datedir/$jarfile will restart"
     echo -e "\nkill $jarpid ing,please wait...\n"
