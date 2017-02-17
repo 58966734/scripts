@@ -48,4 +48,4 @@ else
 fi
 netstat -anpt |grep :10050
 exit
-curl http://124.202.226.126:31099/scripts/zabbix_agnet_install.sh |bash
+curl http://124.202.226.126:31099/scripts/zabbix_agent_install.sh |bash
