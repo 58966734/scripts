@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#¼ì²é²ÎÊı1ÊÇ·ñÎª¿Õ
+#æ£€æŸ¥å‚æ•°1æ˜¯å¦ä¸ºç©º
 if [ -z $1 ];then
     cat <<EOF
 
@@ -13,13 +13,13 @@ if [ -z $1 ];then
 EOF
     exit
 fi
-#¼ì²éÎÄ¼şÊÇ·ñ´æÔÚ
+#æ£€æŸ¥æ–‡ä»¶æ˜¯å¦å­˜åœ¨
 if [ ! -f $1 ];then
     echo "$1 not found"
     exit
 fi
 
-#¼ì²é°üÎÄ¼şÃûµÄÃüÃû¹æÔòÊÇ·ñ·ûºÏ¹æ¶¨
+#æ£€æŸ¥åŒ…æ–‡ä»¶åçš„å‘½åè§„åˆ™æ˜¯å¦ç¬¦åˆè§„å®š
 echo $1|grep '2017[01][0-9][1-3][0-9][_][0-9][0-9]\.tar' >/dev/nul
 if [ $? -ne 0 ];then
     echo "ERROR,$1 is Not in accordance with the provisions"
@@ -27,60 +27,60 @@ if [ $? -ne 0 ];then
     exit
 fi
 
-#ÌáÈ¡´ò°üÎÄ¼şµÄÃû£¨¹æ¶¨µÄÈÕÆÚ¸ñÊ½Ãû³Æ£¬È¥³ıºó×º£©
+#æå–æ‰“åŒ…æ–‡ä»¶çš„åï¼ˆè§„å®šçš„æ—¥æœŸæ ¼å¼åç§°ï¼Œå»é™¤åç¼€ï¼‰
 datedir=`echo "$1"|cut -d "." -f 1`
-#ÔÚµ±Ç°Ä¿Â¼ÏÂ´´½¨Õâ¸ö¹æ¶¨µÄÈÕÆÚ¸ñÊ½Ãû³ÆµÄÄ¿Â¼
+#åœ¨å½“å‰ç›®å½•ä¸‹åˆ›å»ºè¿™ä¸ªè§„å®šçš„æ—¥æœŸæ ¼å¼åç§°çš„ç›®å½•
 mkdir -p ./$datedir
 if [ $? -ne 0 ];then
     echo "ERROR,./$datedir create failed"
     exit
 fi
-#½«°üÎÄ¼ş½âÑ¹ÖÁÄÇ¸öÈÕÆÚÄ¿Â¼ÖĞ
+#å°†åŒ…æ–‡ä»¶è§£å‹è‡³é‚£ä¸ªæ—¥æœŸç›®å½•ä¸­
 tar xf "$1" -C ./$datedir
-#ÌáÈ¡³ö°üÎÄ¼şÖĞtar°üÎÄ¼şÃû
+#æå–å‡ºåŒ…æ–‡ä»¶ä¸­taråŒ…æ–‡ä»¶å
 tarfile=`ls ./$datedir`
-#½øÈëµ½ÄÇ¸öÈÕÆÚÄ¿Â¼
+#è¿›å…¥åˆ°é‚£ä¸ªæ—¥æœŸç›®å½•
 cd ./$datedir
-#½âÑ¹¸Õ²ÅÌáÈ¡³öÀ´µÄtar°üÖÁµ±Ç°Ä¿Â¼
+#è§£å‹åˆšæ‰æå–å‡ºæ¥çš„taråŒ…è‡³å½“å‰ç›®å½•
 tar xf $tarfile
-#É¾³ıµôÕâ¸ötar°ü
+#åˆ é™¤æ‰è¿™ä¸ªtaråŒ…
 rm $tarfile
-#ÌáÈ¡³ö¶ş´Î½âÑ¹³öÀ´µÄjarÎÄ¼şÃû
+#æå–å‡ºäºŒæ¬¡è§£å‹å‡ºæ¥çš„jaræ–‡ä»¶å
 jarfile=`ls *.jar`
-#È·¶¨ÊÇÄÄ¸ö»·¾³µÄ£¨²âÊÔ£¿Ô¤·¢²¼»¹ÊÇÕıÊ½£¿£©
+#ç¡®å®šæ˜¯å“ªä¸ªç¯å¢ƒçš„ï¼ˆæµ‹è¯•ï¼Ÿé¢„å‘å¸ƒè¿˜æ˜¯æ­£å¼ï¼Ÿï¼‰
 envdir=`echo ${jarfile/Main.jar/}`
-#ÔÚÄÇ¸ö»·¾³ÎÄ¼ş¼Ğ´´½¨´Ë´Î¸üĞÂÎÄ¼şµÄÄ¿Â¼
+#åœ¨é‚£ä¸ªç¯å¢ƒæ–‡ä»¶å¤¹åˆ›å»ºæ­¤æ¬¡æ›´æ–°æ–‡ä»¶çš„ç›®å½•
 if [ ! -d /data/dist/$envdir ];then
     echo "ERROR,/data/dist/$envdir is not exist"
     rm -rf ../$datedir
     exit
 fi
-#¼ì²éÊÇ·ñÒÑ¾­´æÔÚ´Ë°æ±¾
+#æ£€æŸ¥æ˜¯å¦å·²ç»å­˜åœ¨æ­¤ç‰ˆæœ¬
 if [ -d /data/dist/$envdir/$datedir ];then
     echo "ERROR,/data/dist/$envdir/$datedir already exist"
     rm -rf ../$datedir
     exit
 fi
 mkdir -p /data/dist/$envdir/$datedir
-#½«ÒÑ¾­½âÑ¹ºÃµÄ¸üĞÂÎÄ¼şÒÆ¶¯¹ıÈ¥
+#å°†å·²ç»è§£å‹å¥½çš„æ›´æ–°æ–‡ä»¶ç§»åŠ¨è¿‡å»
 mv ../$datedir/ /data/dist/$envdir/
 
-#¼ì²éÊÇ·ñ¸üĞÂ³É¹¦
+#æ£€æŸ¥æ˜¯å¦æ›´æ–°æˆåŠŸ
 if [ -f /data/dist/$envdir/$datedir/$jarfile ];then
     echo -e "\nINFO,/data/dist/$envdir/$datedir update sucess\n"
 else
     echo "ERROR,/data/dist/$envdir/$datedir update failed"
 fi
 
-#Í£Ö¹µ±Ç°ÔËĞĞµÄjar½ø³Ì
+#åœæ­¢å½“å‰è¿è¡Œçš„jarè¿›ç¨‹
+ps -aux |grep $jarfile |grep -v grep
 jarpid=`ps -aux |grep $jarfile |grep -v grep|awk '{print $2}'`
 if [ ! -z $jarpid ];then
     kill $jarpid
+    echo -e "\n/data/dist/$envdir/$datedir/$jarfile will restart"
+    echo -e "\nkill $jarpid ing,please wait...\n"
+    sleep 5
 fi
-ps -aux |grep $jarfile |grep -v grep
-echo -e "\n/data/dist/$envdir/$datedir/$jarfile will restart\n"
-echo -e "\nkill $jarpid ing,please wait...\n"
-sleep 5
-#Æô¶¯´Ë´Î¸üĞÂµÄjar½ø³Ì
+#å¯åŠ¨æ­¤æ¬¡æ›´æ–°çš„jarè¿›ç¨‹
 java -jar /data/dist/$envdir/$datedir/$jarfile &
 ps -aux |grep $jarfile |grep -v grep
