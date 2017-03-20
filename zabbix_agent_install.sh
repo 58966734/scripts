@@ -68,5 +68,5 @@ else
     echo "error, $agentInstallPath/sbin/zabbix_agentd no found"
     exit
 fi
-netstat -anpt |grep :10050
+netstat -anptl |grep :10050
 exit
