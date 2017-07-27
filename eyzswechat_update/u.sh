@@ -45,7 +45,7 @@ do
 
 done
 
-read -n1 -p "continue?" comfirm
+read -n1 -p "continue?" confirm
 if [ "$confirm" == "y" ];then
 	echo "y"
 else
