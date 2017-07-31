@@ -71,11 +71,11 @@ do
 				else
 					echo -e "Y\tfile\t$dist/$l"
 					date_str=`date +%Y%m%d%H%M%S`
-			        cp $dist/$l $dist/$l-$date_str.bak
+			        	cp $dist/$l $dist/$l-$date_str.bak
 				fi
 			        cp $src/$fd/$l $dist/$l
-				ls -l $dist/$fd*
-		                stat $dist/$fd
+				ls -l $dist/$l*
+		                stat $dist/$l
 	
                         elif [ -d $fd/$l ];then
                                 [ ! -d $dist/$l ] && echo -e "X\tdir\t$dist/$l" || echo -e "Y\tdir\t$dist/$l"
@@ -100,7 +100,13 @@ do
 		stat $dist/$fd
 
         elif [ -d $fd -a `echo $fd |rev|cut -c 1` != / ];then
-                [ ! -d $dist/$fd ] && echo -e "X\tdir\t$dist/$fd" || echo -e "Y\tdir\t$dist/$fd"
+                if [ ! -d $dist/$fd ];then
+			echo -e "X\tdir\t$dist/$fd"
+			cp -r $src/$fd $dist/
+			ls -l $dist/$fd
+		else
+			echo -e "Y\tdir\t$dist/$fd"
+		fi
         fi
 
 
