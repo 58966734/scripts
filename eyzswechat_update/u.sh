@@ -1,4 +1,43 @@
 #!/bin/bash
+
+###更新文件处理函数###
+updateFile(){
+	#文件名
+	file=$1
+	#源路径
+	sDir=$2
+	#目标路径
+	dDir=$3
+	#检查还是更新:0为检查1为更新
+	checkOrDo=$4
+	#若源文件有效
+	if [ -f $sDir/$file ];then
+		date_str=`date +%Y%m%d%H%M%S`
+		#目标路径下不存在这个文件
+		if [ ! -f $dDir/$file ];then
+				echo -e "X\tfile\t$dDir/$file"
+		#目标路径下存在这个文件
+		else
+			echo -e "Y\tfile\t$dDir/$file"
+			if [ $checkOrDo -eq 1 ];then
+				cp $dDir/$file $dDir/$file-$date_str.bak
+				if [ ! -f $dDir/$file-$date_str.bak ];then
+					echo "ERROR,$dDir/$file-$date_str.bak backup failed"
+					exit
+				else
+					stat $dDir/$file-$date_str.bak
+				fi
+			fi
+		fi
+		if [ $checkOrDo -eq 1 ];then
+			cp $sDir/$file $dDir/$file
+			#ls -l $dDir/$file*
+			stat $dDir/$file
+		fi
+	fi
+}
+
+###main###
 src=`pwd`
 if [ -z $src ];then
 	echo \$! can not null
@@ -28,7 +67,7 @@ do
 		do
 			
 			if [ -f $fd/$l ];then
-				[ ! -f $dist/$l ] && echo -e "X\tfile\t$dist/$l" || echo -e "Y\tfile\t$dist/$l"
+				updateFile $l $src $dist 0
 			elif [ -d $fd/$l ];then
 				[ ! -d $dist/$l ] && echo -e "X\tdir\t$dist/$l" || echo -e "Y\tdir\t$dist/$l"
 			else
@@ -38,9 +77,10 @@ do
 		done
 		
 	fi
-	#如果源是目录，进行目录检查	
+	#如果源是文件，进行文件检查	
 	if [ -f $src/$fd ];then
-		[ ! -f $dist/$fd ] && echo -e "X\tfile\t$dist/$fd" || echo -e "Y\tfile\t$dist/$fd"
+		updateFile $fd $src $dist 0
+	#如果是目录，进行目标检查
 	elif [ -d $fd -a `echo $fd |rev|cut -c 1` != / ];then
 		[ ! -d $dist/$fd ] && echo -e "X\tdir\t$dist/$fd" || echo -e "Y\tdir\t$dist/$fd"
 	fi
@@ -48,6 +88,7 @@ do
 
 done
 
+#输入y则进行更新操作否则退出
 read -n1 -p "continue?" confirm
 if [ "$confirm" == "y" ];then
 	echo "y"
@@ -69,20 +110,7 @@ do
                 do
 
                         if [ -f $fd/$l ];then
-                                if [ ! -f $dist/$l ];then
-					echo -e "X\tfile\t$dist/$l"
-				else
-					echo -e "Y\tfile\t$dist/$l"
-					date_str=`date +%Y%m%d%H%M%S`
-					#备份原文件
-			        	cp $dist/$l $dist/$l-$date_str.bak
-				fi
-				#将目录/下的文件拷贝至目录路径下
-			        cp $src/$fd/$l $dist/$l
-				#ls -l $dist/$l*
-				stat $dist/$l-$date_str.bak
-		                stat $dist/$l
-	
+							updateFile $l $src $dist 1
                         elif [ -d $fd/$l ];then
                                 [ ! -d $dist/$l ] && echo -e "X\tdir\t$dist/$l" || echo -e "Y\tdir\t$dist/$l"
                         else
@@ -92,20 +120,9 @@ do
                 done
 
         fi
-	#如果是文件，则进行备份替换
+		#如果源是文件，则进行备份替换
         if [ -f $src/$fd ];then
-                if [ ! -f $dist/$fd ];then
-			echo -e "X\tfile\t$dist/$fd"
-		else
-			echo -e "Y\tfile\t$dist/$fd"
-			date_str=`date +%Y%m%d%H%M%S`
-			cp $dist/$fd $dist/$fd-$date_str.bak
-		fi
-		cp $src/$fd $dist/$fd
-		#ls -l $dist/$fd*
-		stat $dist/$fd-$date_str.bak
-		stat $dist/$fd
-
+			updateFile $fd $src $dist 1
         elif [ -d $fd -a `echo $fd |rev|cut -c 1` != / ];then
                 if [ ! -d $dist/$fd ];then
 			echo -e "X\tdir\t$dist/$fd"
@@ -119,3 +136,4 @@ do
 
 
 done
+
