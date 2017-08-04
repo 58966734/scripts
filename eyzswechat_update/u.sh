@@ -1,11 +1,4 @@
 #!/bin/bash
-
-#更新说明.txt格式
-#文件名;目标路径;文件更新
-#目录/;目标路径;目录下的文件更新
-#目录;目标路径;目录放至目标路径下
-
-
 src=`pwd`
 if [ -z $src ];then
 	echo \$! can not null
@@ -17,6 +10,7 @@ if [ ! -f 更新说明.txt ];then
 	exit
 fi
 #对更新说明文件进行编码转换，并在结尾追加一个空行
+more 更新说明.txt
 dos2unix 更新说明.txt
 echo -e '\n' >>更新说明.txt
 #更新说明文件逐行处理
@@ -85,7 +79,8 @@ do
 				fi
 				#将目录/下的文件拷贝至目录路径下
 			        cp $src/$fd/$l $dist/$l
-				ls -l $dist/$l*
+				#ls -l $dist/$l*
+				stat $dist/$l-$date_str.bak
 		                stat $dist/$l
 	
                         elif [ -d $fd/$l ];then
@@ -107,7 +102,8 @@ do
 			cp $dist/$fd $dist/$fd-$date_str.bak
 		fi
 		cp $src/$fd $dist/$fd
-		ls -l $dist/$fd*
+		#ls -l $dist/$fd*
+		stat $dist/$fd-$date_str.bak
 		stat $dist/$fd
 
         elif [ -d $fd -a `echo $fd |rev|cut -c 1` != / ];then
