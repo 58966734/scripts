@@ -1,5 +1,40 @@
 #!/bin/bash
 
+#cron_task
+cron_task(){
+        flag=0
+        M=$1
+        h=$2
+        d=$3
+        m=$4
+        w=$5
+        nM=`date +%M`
+        nh=`date +%H`
+        nd=`date +%d`
+        nm=`date +%m`
+        nw=`date +%w`
+        let flag+=`compare $M $nM`
+        let flag+=`compare $h $nh`
+        let flag+=`compare $d $nd`
+        let flag+=`compare $m $nm`
+        let flag+=`compare $w $nw`
+        if [ $flag == 5 ];then
+                echo 1
+        else
+                echo 0
+        fi
+}
+#compare n nn
+compare(){
+        if [ $1 == '#' ];then
+                echo 1
+        elif [ $1 == $2 ];then
+                echo 1
+        else
+                echo 0
+        fi
+}
+
 localRsync(){
         #定义项目名称
         projectName=$1
@@ -38,7 +73,7 @@ if [ ! -f localRsync.conf ];then
         echo please cd /data/scripts
         exit
 fi
-
+f=0
 cat localRsync.conf | while read line;
 do
         echo "$line" |grep -E '^[ ]*#|^$' && continue
@@ -47,6 +82,11 @@ do
         distPath=`echo "$line" | awk -F\; '{print $3}'`
         dataType=`echo "$line" | awk -F\; '{print $4}'`
         rsyncOption=`echo "$line" | awk -F\; '{print $5}'`
-        localRsync "$projectName" "$srcPath" "$distPath" "$dataType" "$rsyncOption"
+	cron=`echo "$line" | awk -F\; '{print $6}'`
+	f=`cron_task $cron`
+	if [ $f -eq 1 ];then
+		localRsync "$projectName" "$srcPath" "$distPath" "$dataType" "$rsyncOption" &
+	fi
 done
+
 
