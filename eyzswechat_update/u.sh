@@ -67,7 +67,7 @@ do
 		do
 			
 			if [ -f $fd/$l ];then
-				updateFile $l $src $dist 0
+				updateFile $l $src/$fd $dist 0
 			elif [ -d $fd/$l ];then
 				[ ! -d $dist/$l ] && echo -e "X\tdir\t$dist/$l" || echo -e "Y\tdir\t$dist/$l"
 			else
@@ -110,7 +110,7 @@ do
                 do
 
                         if [ -f $fd/$l ];then
-							updateFile $l $src $dist 1
+							updateFile $l $src/$fd $dist 1
                         elif [ -d $fd/$l ];then
                                 [ ! -d $dist/$l ] && echo -e "X\tdir\t$dist/$l" || echo -e "Y\tdir\t$dist/$l"
                         else
