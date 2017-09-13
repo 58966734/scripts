@@ -58,8 +58,9 @@ localRsync(){
 		#开始同步
 		datestr=`date +%Y%m%d`
 		logfile=$distPath/$projectName/$dataType/$projectName-$dataType-$datestr.log
-		rsync $5 . $distPath_1 >>$logfile
+		rsync $rsyncOption . $distPath_1 >>$logfile
 		cd $distPath/$projectName/$dataType
+		ls -lst *.tar.gz|sed 1,4d|awk '{print $NF}' |xargs rm -f &
 		if [ ! -f $projectName-$dataType-$datestr.tar.gz ];then
 			#对备份文件进行打包
 			tar czf $projectName-$dataType-$datestr.tar.gz $distPath_1

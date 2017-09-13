@@ -69,7 +69,7 @@ do
 			if [ -f $fd/$l ];then
 				updateFile $l $src/$fd $dist 0
 			elif [ -d $fd/$l ];then
-				[ ! -d $dist/$l ] && echo -e "X\tdir\t$dist/$l" || echo -e "Y\tdir\t$dist/$l"
+				[ ! -d $dist/$l ] && echo -e "X\tdir\t$dist/$l" || echo -e "\033[31mY\tdir\t$dist/$l\033[0m"
 			else
 				echo -e "X\t\t:$fd/$l"
 			fi
@@ -110,9 +110,16 @@ do
                 do
 
                         if [ -f $fd/$l ];then
-							updateFile $l $src/$fd $dist 1
+				updateFile $l $src/$fd $dist 1
                         elif [ -d $fd/$l ];then
-                                [ ! -d $dist/$l ] && echo -e "X\tdir\t$dist/$l" || echo -e "Y\tdir\t$dist/$l"
+				if [ ! -d $dist/$l ];then
+					echo -e "X\tdir\t$dist/$l"
+					cp -r $fd/$l $dist
+					ls -l $dist/$l
+				else
+					#echo -e "Y\tdir\t$dist/$l"
+					echo -e "\033[31mY\tdir\t$dist/$l\033[0m"
+				fi
                         else
                                 echo -e "X\t\t:$fd/$l"
                         fi
@@ -126,11 +133,12 @@ do
         elif [ -d $fd -a `echo $fd |rev|cut -c 1` != / ];then
                 if [ ! -d $dist/$fd ];then
 			echo -e "X\tdir\t$dist/$fd"
-			#将目录拷贝至目录目录下
+			#将目录拷贝至目标目录下
 			cp -r $src/$fd $dist/
 			ls -l $dist/$fd
 		else
-			echo -e "Y\tdir\t$dist/$fd"
+			#echo -e "Y\tdir\t$dist/$fd"
+			echo -e "\033[31mY\tdir\t$dist/$fd\033[0m"
 		fi
         fi
 
